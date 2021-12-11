@@ -107,7 +107,7 @@ func wrap(to_wrap : Vector2) -> Vector2:
 var walker_pos := Vector2(cols / 2.0, rows / 2.0)
 func random_walker() -> void:
 	# clear previous pixel
-	# canvas.set_pixel(int(walker_pos.x), int(walker_pos.y), Color8(0, 0, 0))
+	canvas.set_pixel(int(walker_pos.x), int(walker_pos.y), Color8(0, 0, 0))
 	
 	# set next pixel
 	walker_pos.x = walker_pos.x + rng.randi_range(-1,1)
