@@ -10,19 +10,21 @@ var canvasTexture : ImageTexture = null
 
 var field := PoolIntArray()
 
+var cols : int = 80
+var rows : int = 45
 
 ################################################################################
 func _ready() -> void:
 	rng.randomize()
 	var screen_size := get_viewport().size
-	self.rect_size = Vector2(80, 45)
+	self.rect_size = Vector2(cols, rows)
 
 	r_pentomino()
 	
 	self.rect_scale = screen_size / self.rect_size
 
 	canvas = Image.new()
-	canvas.create(int(self.rect_size.x), int(self.rect_size.y), false, Image.FORMAT_RGB8)
+	canvas.create(cols, rows, false, Image.FORMAT_RGB8)
 	canvas.fill(Color8(0,0,0))
 
 	canvasTexture = ImageTexture.new()
@@ -83,7 +85,7 @@ func resize_canvas() -> void:
 
 ################################################################################
 func index_from_pos(pos : Vector2) -> int:
-	var index : int = int(pos.x) + int(pos.y) * int(self.rect_size.x)
+	var index : int = int(pos.x) + int(pos.y) * cols
 	return index;
 
 
@@ -91,18 +93,18 @@ func index_from_pos(pos : Vector2) -> int:
 func wrap(to_wrap : Vector2) -> Vector2:
 	var out := to_wrap
 	if out.x < 0:
-		out.x = int(self.rect_size.x - 1)
-	if out.x >= self.rect_size.x:
+		out.x = cols - 1
+	if out.x >= cols:
 		out.x = 0
 	if out.y < 0:
-		out.y = int(self.rect_size.y - 1)
-	if out.y >= self.rect_size.y:
+		out.y = rows - 1
+	if out.y >= rows:
 		out.y = 0
 	return out
 
 
 ################################################################################
-var walker_pos := Vector2(self.rect_size.x / 2, self.rect_size.y / 2)
+var walker_pos := Vector2(cols / 2.0, rows / 2.0)
 func random_walker() -> void:
 	# clear previous pixel
 	# canvas.set_pixel(int(walker_pos.x), int(walker_pos.y), Color8(0, 0, 0))
@@ -118,11 +120,11 @@ func random_walker() -> void:
 ################################################################################
 func game_of_life() -> void:
 	var next := PoolIntArray()
-	for p in (self.rect_size.x * self.rect_size.y):
+	for p in (cols * rows):
 		next.append(0)
 
-	for y in self.rect_size.y:
-		for x in self.rect_size.x:
+	for y in rows:
+		for x in cols:
 			var nc := count_neighbors(Vector2(x, y))
 			var index := index_from_pos(Vector2(x, y))
 
@@ -162,10 +164,10 @@ func count_neighbors(pos : Vector2) -> int:
 ################################################################################
 func r_pentomino() -> void:
 	field = PoolIntArray()
-	for p in (self.rect_size.x * self.rect_size.y):
+	for p in (cols * rows):
 		field.append(0)
 
-	var pos := Vector2(self.rect_size.x / 2, self.rect_size.y / 2)
+	var pos := Vector2(cols / 2.0, rows / 2.0)
 	field[index_from_pos(pos)-1] = 1
 	field[index_from_pos(pos)+0] = 1
 	field[index_from_pos(pos)+1] = 1
