@@ -54,7 +54,7 @@ func _process(delta : float) -> void:
 
 		canvas.lock()
 		game_of_life()
-		#random_walker()
+		random_walker()
 		canvas.unlock()
 		
 		canvasTexture.set_data(canvas)
@@ -104,7 +104,7 @@ func wrap(to_wrap : Vector2) -> Vector2:
 
 
 ################################################################################
-var walker_pos := Vector2(cols / 2.0, rows / 2.0)
+var walker_pos := Vector2(cols / 5.0, rows / 2.0)
 func random_walker() -> void:
 	# clear previous pixel
 	canvas.set_pixel(int(walker_pos.x), int(walker_pos.y), Color8(0, 0, 0))
@@ -114,7 +114,11 @@ func random_walker() -> void:
 	walker_pos.y = walker_pos.y + rng.randi_range(-1,1)
 	walker_pos = wrap(walker_pos)
 
-	canvas.set_pixel(int(walker_pos.x), int(walker_pos.y), Color8(255, 255, 255))
+	# wake up a pixel in the field
+	var index := index_from_pos(walker_pos)
+	field[index] = 1
+
+	canvas.set_pixel(int(walker_pos.x), int(walker_pos.y), Color8(255, 0, 0))
 
 
 ################################################################################
