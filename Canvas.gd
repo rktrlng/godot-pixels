@@ -16,11 +16,9 @@ var rows : int = 45
 ################################################################################
 func _ready() -> void:
 	rng.randomize()
+
 	var screen_size := get_viewport().size
 	self.rect_size = Vector2(cols, rows)
-
-	r_pentomino()
-	
 	self.rect_scale = screen_size / self.rect_size
 
 	canvas = Image.new()
@@ -33,10 +31,12 @@ func _ready() -> void:
 	
 	var _sc = get_tree().get_root().connect("size_changed", self, "resize_canvas")
 
+	r_pentomino()
+
 
 ################################################################################
 var timer : float = 0.0
-var fc : int = 0 #frame_counter
+var fc : int = 0 # frame_counter
 var ft : float = 0.0 # frame_timer
 var frame_time : float = 0.0666 # 15 fps
 func _process(delta : float) -> void:
@@ -47,11 +47,10 @@ func _process(delta : float) -> void:
 		print("render: ", int(fc / 5.0), " update: ", int(1.0 / frame_time), " fps")
 		fc = 0
 		ft = 0.0
-	
+
+	# update
 	timer = timer + delta
 	if timer > frame_time:
-		#canvas.fill(Color8(0, 0, 0))
-
 		canvas.lock()
 		game_of_life()
 		random_walker()
@@ -159,9 +158,10 @@ func count_neighbors(pos : Vector2) -> int:
 			if x == 0 && y == 0:
 				pass # this is us
 			else:
-				var p := Vector2(pos.x + x, pos.y + y)
-				var f := field[index_from_pos(wrap(p))]
-				nc = nc + f
+				var neighbor := Vector2(pos.x + x, pos.y + y)
+				var index := index_from_pos(wrap(neighbor))
+				var value := field[index] # 0 or 1
+				nc = nc + value
 	return nc
 
 
@@ -180,6 +180,3 @@ func r_pentomino() -> void:
 	pos.y = pos.y + 2
 	pos.x = pos.x + 1
 	field[index_from_pos(pos)] = 1
-
-
-################################################################################
